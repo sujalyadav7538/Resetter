@@ -3,22 +3,45 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast"
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const {toast}=useToast();
 
-  const handleSubmit = async () => {
-    const data = await fetch("api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    const response = await data.json();
-    console.log(response);
-  };
+ const handleSubmit = async() => {
+     try {
+       if(!email || !password ){
+         toast({
+           variant: "destructive",
+           title: "ALL FIELDS ARE REQUIRED",
+           action: <ToastAction altText="Try again" >Try again</ToastAction>,
+         });
+         return;
+         
+       }
+       const response=await fetch('api/auth/login',{
+         method:"POST",
+         headers:{
+           "Content-Type":"application/json"
+         },
+         body:JSON.stringify({email,password})
+       });
+       const data = await response.json();
+       if(data.success==false){
+         toast({title:data.message,variant: "destructive"});
+         return;
+       }
+       console.log(data)
+       toast({description:data.message})
+         
+     } catch (error) {
+       toast({title:error.message,variant: "destructive"});
+     }
+     };
 
   return (
     <div className="w-full h-screen flex justify-center items-center py-5 bg-gray-100">

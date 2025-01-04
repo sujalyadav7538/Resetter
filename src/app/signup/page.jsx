@@ -3,18 +3,47 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button"
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+
 
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const {toast}=useToast();
 
-  const handleSubmit = () => {
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", password);
-  };
+  const handleSubmit = async() => {
+    try {
+      if(!email || !password || !name){
+        toast({
+          variant: "destructive",
+          title: "ALL FIELDS ARE REQUIRED",
+          action: <ToastAction altText="Try again" >Try again</ToastAction>,
+        });
+        return;
+        
+      }
+      const response=await fetch('api/auth/signup',{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({email,password,name})
+      });
+      const data = await response.json();
+      if(data.success==false){
+        toast({title:data.message,variant: "destructive"});
+        return;
+      }
+
+      toast({description:data.message})
+        
+    } catch (error) {
+      toast({title:error.message,variant: "destructive"});
+    }
+    };
 
   return (
     <div className="w-full h-screen flex justify-center items-center py-5 bg-gray-100">

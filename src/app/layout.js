@@ -1,6 +1,5 @@
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider.jsx";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
   title: "Create Next App",
