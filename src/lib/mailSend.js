@@ -11,16 +11,16 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function SendMail({ link, reciepent }) {
+async function SendMail({ link, recipient }) {
   try {
-    console.log(link, reciepent);
+    console.log(link, recipient);
     // Render JSX to HTML
-    const htmlContent = PasswordResetEmail({userName:reciepent,resetLink:link})
+    const htmlContent = PasswordResetEmail({userName:recipient,resetLink:link})
 
     // Send mail with defined transport object
     const info = await transporter.sendMail({
       from: `<${process.env.HOST_ADDRESS}>`, // sender address
-      to: reciepent, // list of receivers
+      to: recipient, // list of receivers
       subject: "Password Reset Mail", // Subject line
       text: "", // plain text body (optional)
       html: htmlContent, // HTML body
